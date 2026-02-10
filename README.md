@@ -1,5 +1,5 @@
 
-# Lab 3a: Secure Cross-Region Medical Architecture (APPI-Compliant)
+# Secure Cross-Region Medical Architecture (APPI-Compliant)
 
 ## Project Summary
 
