@@ -1,7 +1,7 @@
 
-############################################
+# ========================================================================
 # Project General Variables
-############################################
+# ========================================================================
 
 variable "aws_region" {
   description = "AWS region for deployment"
@@ -9,9 +9,9 @@ variable "aws_region" {
   default     = "us-east-1"
 }
 
-############################################
-# Bonus B - Route 53, Connectivity & DNS Variables
-############################################
+# ========================================================================
+# Route 53, Connectivity & DNS Variables
+# ========================================================================
 
 variable "domain_name" {
   description = "Base domain you registered (e.g., yourdomain.com)."
@@ -41,9 +41,9 @@ variable "manage_route53_in_terraform" {
   default     = false
 }
 
-############################################
-# Bonus B - Security & Monitoring Toggles
-############################################
+# ========================================================================
+# Security & Monitoring Toggles
+# ========================================================================
 
 variable "enable_waf" {
   description = "Toggle WAF creation."
@@ -81,9 +81,9 @@ variable "alb_5xx_evaluation_periods" {
   default     = 1
 }
 
-############################################
+# ========================================================================
 # WAF CONFIG
-############################################
+# ========================================================================
 
 variable "waf_log_destination" {
   description = "The target for WAF logs. Set to 'cloudwatch' to enable the current resources."

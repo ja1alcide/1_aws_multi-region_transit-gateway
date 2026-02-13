@@ -76,8 +76,8 @@ resource "aws_route53_record" "chewbacca_apex_to_cf01" {
   type    = "A"
 
   alias {
-    name                   = aws_cloudfront_distribution.chewbacca_cf01.domain_name
-    zone_id                = aws_cloudfront_distribution.chewbacca_cf01.hosted_zone_id
+    name                   = aws_cloudfront_distribution.tokyo_cf01.domain_name
+    zone_id                = aws_cloudfront_distribution.tokyo_cf01.hosted_zone_id
     evaluate_target_health = false
   }
 }
@@ -89,8 +89,8 @@ resource "aws_route53_record" "chewbacca_app_to_cf01" {
   type    = "A"
 
   alias {
-    name                   = aws_cloudfront_distribution.chewbacca_cf01.domain_name
-    zone_id                = aws_cloudfront_distribution.chewbacca_cf01.hosted_zone_id
+    name                   = aws_cloudfront_distribution.tokyo_cf01.domain_name
+    zone_id                = aws_cloudfront_distribution.tokyo_cf01.hosted_zone_id
     evaluate_target_health = false
   }
 }

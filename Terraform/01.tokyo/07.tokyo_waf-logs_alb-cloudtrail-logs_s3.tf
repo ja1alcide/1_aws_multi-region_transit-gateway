@@ -1,7 +1,6 @@
-############################################
-# THE AUDIT VAULT (S3)
-# Central storage for all evidence
-############################################
+# ------------------------------------------------------------------------
+# THE AUDIT VAULT
+# ------------------------------------------------------------------------
 resource "aws_s3_bucket" "audit_vault" {
   bucket = "class-lab3-${data.aws_caller_identity.current.account_id}"
 
@@ -31,10 +30,9 @@ resource "aws_s3_bucket_public_access_block" "audit_vault_pab" {
   restrict_public_buckets = true
 }
 
-############################################
-# VAULT ACCESS POLICY
+# ------------------------------------------------------------------------
 # Bucket Policy to Allow ALB, CloudFront, and CloudTrail to write here
-############################################
+# ------------------------------------------------------------------------
 resource "aws_s3_bucket_policy" "audit_vault_policy" {
   bucket = aws_s3_bucket.audit_vault.id
 
@@ -95,17 +93,16 @@ resource "aws_s3_bucket_policy" "audit_vault_policy" {
   })
 }
 
-############################################
-# CLOUDTRAIL - Satisfies "Who made any chnages" audit requirement
-############################################
+# ------------------------------------------------------------------------
+# CLOUDTRAIL
+# ------------------------------------------------------------------------
 resource "aws_cloudtrail" "audit_trail" {
   name           = "compliance-audit-trail"
   s3_bucket_name = aws_s3_bucket.audit_vault.id
 
   is_multi_region_trail         = true
   include_global_service_events = true
-  enable_log_file_validation    = true # Integrity validation
-
+  enable_log_file_validation    = true
   event_selector {
     read_write_type           = "All"
     include_management_events = true
@@ -118,11 +115,11 @@ resource "aws_cloudtrail" "audit_trail" {
   depends_on = [aws_s3_bucket_policy.audit_vault_policy]
 }
 
-############################################
-# WAFv2 (The Shield)
-############################################
-resource "aws_wafv2_web_acl" "chewbacca_waf01" {
-  provider = aws.us_e_1 # WAF for CloudFront MUST be in us-east-1
+# ------------------------------------------------------------------------
+# WAFv2
+# ------------------------------------------------------------------------
+resource "aws_wafv2_web_acl" "tokyo_waf01" {
+  provider = aws.us_e_1
 
   count = var.enable_waf ? 1 : 0
   name  = "${var.project_name}-waf01"
@@ -159,10 +156,10 @@ resource "aws_wafv2_web_acl" "chewbacca_waf01" {
   }
 }
 
-############################################
-# WAF LOGGING (Evidence Collection)
-############################################
-resource "aws_cloudwatch_log_group" "chewbacca_waf_log_group01" {
+# ------------------------------------------------------------------------
+# WAF LOGGING
+# ------------------------------------------------------------------------
+resource "aws_cloudwatch_log_group" "tokyo_waf_log_group01" {
   provider          = aws.us_e_1
   count             = var.waf_log_destination == "cloudwatch" ? 1 : 0
   name              = "aws-waf-logs-${var.project_name}-webacl01"
@@ -170,13 +167,13 @@ resource "aws_cloudwatch_log_group" "chewbacca_waf_log_group01" {
 }
 
 # attaching WAF logs to CloudFront
-resource "aws_wafv2_web_acl_logging_configuration" "chewbacca_waf_logging01" {
+resource "aws_wafv2_web_acl_logging_configuration" "tokyo_waf_logging01" {
   provider                = aws.us_e_1
   count                   = var.enable_waf && var.waf_log_destination == "cloudwatch" ? 1 : 0
-  resource_arn            = aws_wafv2_web_acl.chewbacca_waf01[0].arn
-  log_destination_configs = [aws_cloudwatch_log_group.chewbacca_waf_log_group01[0].arn]
+  resource_arn            = aws_wafv2_web_acl.tokyo_waf01[0].arn
+  log_destination_configs = [aws_cloudwatch_log_group.tokyo_waf_log_group01[0].arn]
 
-  depends_on = [aws_wafv2_web_acl.chewbacca_waf01]
+  depends_on = [aws_wafv2_web_acl.tokyo_waf01]
 }
 
 resource "aws_cloudwatch_log_resource_policy" "waf_logging_policy" {
@@ -188,17 +185,15 @@ resource "aws_cloudwatch_log_resource_policy" "waf_logging_policy" {
       Effect    = "Allow"
       Principal = { Service = "delivery.logs.amazonaws.com" }
       Action    = ["logs:CreateLogStream", "logs:PutLogEvents"]
-      Resource  = "${aws_cloudwatch_log_group.chewbacca_waf_log_group01[0].arn}:*"
+      Resource  = "${aws_cloudwatch_log_group.tokyo_waf_log_group01[0].arn}:*"
     }]
   })
 }
 
-############################################
-# WAF LOGGING (Evidence Collection)
-############################################
+# ------------------------------------------------------------------------
+# WAF LOGGING - Evidence Collection
+# ------------------------------------------------------------------------
 
-# 1. Ownership Controls needed for WAF log info
-# Tell S3 we prefer ACLs for this specific bucket
 resource "aws_s3_bucket_ownership_controls" "audit_vault_ownership" {
   bucket = aws_s3_bucket.audit_vault.id
 
@@ -207,7 +202,6 @@ resource "aws_s3_bucket_ownership_controls" "audit_vault_ownership" {
   }
 }
 
-# 2. Enable the ACL
 resource "aws_s3_bucket_acl" "audit_vault_acl" {
   depends_on = [aws_s3_bucket_ownership_controls.audit_vault_ownership]
 

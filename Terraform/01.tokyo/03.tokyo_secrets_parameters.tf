@@ -1,4 +1,4 @@
-# Terraform password generated only for lab
+# Terraform password generated only for project example
 # Only one is needed, password generated in Tokyo will be used in all regions
 resource "random_password" "password" {
   length           = 30

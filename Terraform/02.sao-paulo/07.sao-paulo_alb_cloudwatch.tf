@@ -1,13 +1,12 @@
-############################################
+# -------------------------------------------------------------------------
 # CloudWatch Dashboard for ALB: The Cockpit HUD
-############################################
+# -------------------------------------------------------------------------
 
 resource "aws_cloudwatch_dashboard" "saopaulo_dashboard02" {
   provider = aws.sao-paulo
 
   dashboard_name = "${var.project_name}-${var.networks["sao-paulo"].region}-dashboard01"
 
-  # The dashboard_body is a JSON string. We use jsonencode to keep it clean.
   dashboard_body = jsonencode({
     widgets = [
       {
@@ -47,9 +46,9 @@ resource "aws_cloudwatch_dashboard" "saopaulo_dashboard02" {
   })
 }
 
-# ############################################
+# -------------------------------------------------------------------------
 # SNS Topic for ALB Alerts
-# ############################################
+# -------------------------------------------------------------------------
 
 resource "aws_sns_topic" "saopaulo_sns_topic02" {
   provider = aws.sao-paulo

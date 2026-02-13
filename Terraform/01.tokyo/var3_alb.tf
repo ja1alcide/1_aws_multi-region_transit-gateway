@@ -13,7 +13,7 @@ variable "alb_config" {
 
     certificate_arn = optional(string, null)
 
-    alb_ingress_rules = optional(map(object({ #Setting commonly used varibales accros all regions
+    alb_ingress_rules = optional(map(object({ 
       from_port   = number
       to_port     = number
       ip_protocol = string
@@ -38,7 +38,7 @@ variable "alb_config" {
       }
     )
 
-    alb_egress_rules = optional(map(object({ #Setting commonly used varibales accros all regions
+    alb_egress_rules = optional(map(object({ 
       from_port   = number
       to_port     = number
       ip_protocol = string
@@ -56,7 +56,7 @@ variable "alb_config" {
       }
     )
 
-    health_check_config = optional(object({       #Setting commonly used varibales accros all regions
+    health_check_config = optional(object({       
       path                = optional(string, "/") # aim to update app to have '/health' path for proper health checks
       protocol            = optional(string, "HTTP")
       matcher             = optional(string, "200-299")

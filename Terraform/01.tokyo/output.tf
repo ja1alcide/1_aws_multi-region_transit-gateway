@@ -25,7 +25,7 @@ output "s3_bucket_name" {
 
 output "cloudfront_dns_name" {
   description = "Domain name for Cloudfront distribution"
-  value       = aws_cloudfront_distribution.chewbacca_cf01.domain_name
+  value       = aws_cloudfront_distribution.tokyo_cf01.domain_name
 }
 
 output "db_random_password" {

@@ -1,6 +1,6 @@
-############################################
-# S3: ALB Access Logs Vault
-############################################
+# -------------------------------------------------------------------------
+# ALB Access Logs Vault
+# -------------------------------------------------------------------------
 
 resource "aws_s3_bucket" "sp_local_vault" {
   provider = aws.sao-paulo
@@ -13,7 +13,7 @@ resource "aws_s3_bucket" "sp_local_vault" {
   tags = { Name = "${var.project_name}-alb-logs-bucket01" }
 }
 
-resource "aws_s3_bucket_public_access_block" "chewbacca_alb_logs_pab02" {
+resource "aws_s3_bucket_public_access_block" "sao_paulo_alb_logs_pab02" {
   provider = aws.sao-paulo
 
   count  = var.enable_alb_access_logs ? 1 : 0
@@ -25,11 +25,10 @@ resource "aws_s3_bucket_public_access_block" "chewbacca_alb_logs_pab02" {
   restrict_public_buckets = true
 }
 
-# ############################################
-# # VAULT ACCESS POLICY
-# # Bucket Policy to Allow ALB, CloudFront, and CloudTrail to write here
-# ############################################
-resource "aws_s3_bucket_policy" "chewbacca_alb_logs_policy02" {
+# -------------------------------------------------------------------------
+# VAULT ACCESS POLICY
+# -------------------------------------------------------------------------
+resource "aws_s3_bucket_policy" "sao_paulo_alb_logs_policy02" {
   provider = aws.sao-paulo
 
   count  = var.enable_alb_access_logs ? 1 : 0

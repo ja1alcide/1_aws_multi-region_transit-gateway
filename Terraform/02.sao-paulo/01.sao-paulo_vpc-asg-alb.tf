@@ -1,6 +1,6 @@
-# ##########################################################################
+# -------------------------------------------------------------------------
 # Sao-paulo VPC - Spoke VPC
-# ##########################################################################
+# -------------------------------------------------------------------------
 module "vpc_sao_paulo" {
   source = "../modules/vpc_networking"
 
@@ -31,14 +31,14 @@ module "vpc_sao_paulo" {
 resource "aws_route" "liberdade_to_tokyo_route01" {
   provider               = aws.sao-paulo
   route_table_id         = module.vpc_sao_paulo.private_rt_id
-  destination_cidr_block = data.terraform_remote_state.tokyo.outputs.vpc_cidr # Tokyo VPC CIDR (students supply)
+  destination_cidr_block = data.terraform_remote_state.tokyo.outputs.vpc_cidr
   transit_gateway_id     = aws_ec2_transit_gateway.liberdade_tgw01.id
 }
 
 
-##########################################################################
+# -------------------------------------------------------------------------
 # Sao-Paulo - ASG
-##########################################################################
+# -------------------------------------------------------------------------
 module "compute_sao_paulo" {
   source = "../modules/asg_launch_template"
 
@@ -46,7 +46,6 @@ module "compute_sao_paulo" {
     aws = aws.sao-paulo
   }
 
-  # 1. Global Metadata
   environment = var.environment
   owner       = var.owner
   tags        = var.tags
@@ -84,9 +83,9 @@ module "compute_sao_paulo" {
 }
 
 
-##########################################################################
+# -------------------------------------------------------------------------
 # Sai-Paulo - ALB
-##########################################################################
+# -------------------------------------------------------------------------
 module "alb_sao_paulo" {
   source = "../modules/alb"
   providers = {
@@ -100,8 +99,6 @@ module "alb_sao_paulo" {
   vpc_id     = module.vpc_sao_paulo.vpc_id
   subnet_ids = module.vpc_sao_paulo.public_subnet_id
 
-  # --- ALB Identification ---
-
   alb_name           = var.alb_config["sao-paulo"].alb_name
   internal           = var.alb_config["sao-paulo"].internal
   load_balancer_type = var.alb_config["sao-paulo"].load_balancer_type
@@ -110,7 +107,6 @@ module "alb_sao_paulo" {
   alb_egress_rules    = var.alb_config["sao-paulo"].alb_egress_rules
   health_check_config = var.alb_config["sao-paulo"].health_check_config
 
-  # --- Listeners & Logs ---
   http_port             = var.alb_config["sao-paulo"].http_port
   https_port            = var.alb_config["sao-paulo"].https_port
   certificate_arn       = data.terraform_remote_state.tokyo.outputs.validated_certificate_arn

@@ -14,7 +14,6 @@ resource "aws_iam_role" "ec2_lab_role" {
   })
 }
 
-# Policy to connect via SSM Session Manager
 resource "aws_iam_role_policy_attachment" "ssm_core" {
   for_each = var.networks
 

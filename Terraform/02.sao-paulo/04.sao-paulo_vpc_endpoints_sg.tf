@@ -18,7 +18,6 @@ resource "aws_vpc_endpoint" "interface_endpoints_sp" {
   }
 }
 
-# S3 gateway endpoint doesn't use SGs, it uses route tables
 resource "aws_vpc_endpoint" "s3_gateway_sp" {
   provider = aws.sao-paulo
 
@@ -31,9 +30,9 @@ resource "aws_vpc_endpoint" "s3_gateway_sp" {
   tags = { Name = "${var.environment}-s3-gateway" }
 }
 
-# #################################################################
+# -------------------------------------------------------------------------
 # VPC ENDPOINTS SECURITY GROUP CONFIG
-# #################################################################
+# -------------------------------------------------------------------------
 
 resource "aws_security_group" "vpce_sg_sp" {
   provider = aws.sao-paulo

@@ -1,4 +1,3 @@
-# GLOBAL VARIABLES
 
 variable "environment" {
   description = "Environment for all resources."

@@ -43,7 +43,6 @@ resource "aws_security_group" "rds_sg" {
   })
 }
 
-# need to double check this, TF says it already exists
 resource "aws_vpc_security_group_ingress_rule" "rds_ingress_from_ec2" {
 
   security_group_id            = aws_security_group.rds_sg.id
